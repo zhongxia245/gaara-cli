@@ -1,15 +1,22 @@
 {
-  "name": "lcgc-react-cli",
-  "version": "1.0.0",
-  "description": "",
+  "name": "gaara",
+  "version": "0.0.1",
+  "description": "开箱即用的多页面 webpack 项目",
   "main": "index.js",
+  "bin": {
+    "gaara": "./bin/gaara.js"
+  },
   "scripts": {
-    "start": "node scripts/dev.1.js",
-    "dev": "node scripts/dev.js",
+    "start": "node scripts/dev.js",
+    "dev": "npm start",
     "build": "node scripts/build.js",
     "analyze": "node scripts/analyze.js"
   },
-  "keywords": [],
+  "keywords": [
+    "react",
+    "webpack",
+    "multiple pages"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -23,6 +30,7 @@
     "babel-plugin-import": "^1.11.0",
     "browser-sync": "^2.26.3",
     "clean-webpack-plugin": "^2.0.1",
+    "commander": "^2.20.0",
     "css-loader": "^2.1.1",
     "happypack": "^5.0.1",
     "html-webpack-plugin": "^4.0.0-beta.5",
@@ -35,6 +43,7 @@
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.6.0",
     "postcss-pxtorem": "^4.0.1",
+    "prompts": "^2.0.4",
     "pug": "^2.0.3",
     "pug-loader": "^2.4.0",
     "react-dev-utils": "^8.0.0",
