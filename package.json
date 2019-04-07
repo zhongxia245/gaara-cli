@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node scripts/dev.1js",
+    "start": "node scripts/dev.1.js",
     "dev": "node scripts/dev.js",
     "build": "node scripts/build.js",
     "analyze": "node scripts/analyze.js"
@@ -22,9 +22,10 @@
     "babel-loader": "^8.0.5",
     "babel-plugin-import": "^1.11.0",
     "browser-sync": "^2.26.3",
+    "clean-webpack-plugin": "^2.0.1",
     "css-loader": "^2.1.1",
     "happypack": "^5.0.1",
-    "html-webpack-plugin": "^3.2.0",
+    "html-webpack-plugin": "^4.0.0-beta.5",
     "json-loader": "^0.5.7",
     "less-loader": "^4.1.0",
     "mini-css-extract-plugin": "^0.5.0",

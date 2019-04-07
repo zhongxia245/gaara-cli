@@ -4,8 +4,6 @@ const WebpackDevServer = require('webpack-dev-server')
 
 const webpackConfig = require('../webpack.dev.config')
 
-// webpackConfig.entry.main = ['webpack-dev-server/client?http://0.0.0.0:3000/']
-
 const compiler = webpack(webpackConfig)
 const devServer = new WebpackDevServer(compiler, webpackConfig.devServer)
 
@@ -14,7 +12,13 @@ try {
     if (err) {
       return console.log(err)
     }
-    console.log(chalk.cyan('Starting the development server...\n'))
+    console.log(
+      chalk.cyan(
+        `Starting the development server...\n address: http://${webpackConfig.devServer.host}:${
+          webpackConfig.devServer.port
+        }`
+      )
+    )
   })
 } catch (error) {
   devServer.close()

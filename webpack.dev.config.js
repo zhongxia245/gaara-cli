@@ -1,3 +1,8 @@
+/**
+ * 开发环境的webpack 配置
+ * 1. 增加了热更新
+ * 2. 设置 devServer 代理
+ */
 const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
@@ -5,7 +10,7 @@ const merge = require('webpack-merge')
 const webpackBaseConfig = require('./webpack.base.config')
 const CONFIG = require('./config')
 
-module.exports = merge(webpackBaseConfig, {
+module.exports = merge(webpackBaseConfig(true), {
   stats: 'errors-only',
   mode: 'development',
   devtool: '#cheap-module-eval-source-map',
@@ -14,7 +19,14 @@ module.exports = merge(webpackBaseConfig, {
     filename: '[name].js',
     chunkFilename: '[name].js'
   },
-  plugins: [new webpack.optimize.OccurrenceOrderPlugin(), new webpack.HotModuleReplacementPlugin()],
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('development'),
+      ...CONFIG.environments
+    }),
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.HotModuleReplacementPlugin()
+  ],
   devServer: {
     contentBase: path.resolve(__dirname, CONFIG.outputPath),
     port: CONFIG.port,
