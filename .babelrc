@@ -1,0 +1,10 @@
+{
+  "plugins": [
+    "styled-jsx/babel",
+    "@babel/plugin-transform-react-jsx",
+    "@babel/plugin-syntax-dynamic-import",
+    ["import", { "libraryName": "ant-mobile", "libraryDirectory": "lib" }, "ant-mobile"],
+    ["import", { "libraryName": "antd", "libraryDirectory": "lib" }, "ant"]
+  ],
+  "presets": ["@babel/preset-env", "@babel/preset-react"]
+}
