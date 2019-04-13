@@ -30,6 +30,8 @@ const defaultConfig = {
   outputPath: 'dist',
   // 文件引用路径别名
   alias: {},
+  // px 自动转成 rem
+  usePx2Rem: true,
   // rem 转换基准
   basePixel: 16,
   // 公共模块

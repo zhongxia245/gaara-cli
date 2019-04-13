@@ -1,5 +1,6 @@
 import './index.less'
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 
 class Page extends Component {
   render() {
@@ -7,4 +8,4 @@ class Page extends Component {
   }
 }
 
-export default Page
+ReactDOM.render(<Page />, document.getElementById('app'))

@@ -9,6 +9,8 @@ module.exports = {
   alias: {},
   // 外部引用
   externals: {},
+  // px 自动转成 rem
+  usePx2Rem: true,
   // rem 转换基准
   basePixel: 16,
   // 公共模块

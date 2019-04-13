@@ -38,6 +38,22 @@ const getEntries = (pattern, hotReload) => {
   }, {})
 }
 
+// postcss 的配置
+const postCssConfig = [
+  require('postcss-import'),
+  require('postcss-preset-env')({
+    browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 8', 'iOS >= 8', 'Android >= 4']
+  })
+]
+if (CONFIG.usePx2Rem) {
+  postCssConfig.push(
+    require('postcss-pxtorem')({
+      rootValue: CONFIG.basePixel,
+      propWhiteList: []
+    })
+  )
+}
+
 module.exports = function(isDev) {
   const jsRegx = `${CONFIG.inputPath}/**/*.jsx`
   const htmlRegx = `${CONFIG.inputPath}/**/*.pug`
@@ -113,14 +129,23 @@ module.exports = function(isDev) {
     new HappyPack({
       id: 'css',
       threadPool: happyThreadPool,
-      loaders: ['css-loader', 'postcss-loader']
+      loaders: [
+        'css-loader',
+        {
+          loader: 'postcss-loader',
+          options: postCssConfig
+        }
+      ]
     }),
     new HappyPack({
       id: 'less',
       threadPool: happyThreadPool,
       loaders: [
         'css-loader',
-        'postcss-loader',
+        {
+          loader: 'postcss-loader',
+          options: postCssConfig
+        },
         {
           loader: 'less-loader',
           options: CONFIG.lessOption
