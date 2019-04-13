@@ -119,8 +119,7 @@ module.exports = function(isDev) {
               require.resolve('@babel/plugin-transform-react-jsx'),
               require.resolve('@babel/plugin-syntax-dynamic-import'),
               require.resolve('@babel/plugin-proposal-class-properties'),
-              ['import', { libraryName: 'ant-mobile', libraryDirectory: 'lib' }, 'ant-mobile'],
-              ['import', { libraryName: 'antd', libraryDirectory: 'lib' }, 'ant']
+              ['import', { libraryName: 'ant-mobile', libraryDirectory: 'lib' }, 'ant-mobile']
             ],
             presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-react')]
           }
