@@ -1,13 +1,14 @@
-该项目由 `create-react-app` 和 自定义的 `lcgc-react-script` npm 包生成的脚手架项目。
+# Gaara-cli Demo Project
+
+该项目由 `create-react-app` 和 自定义的 `gaara-cli` npm 包生成的脚手架项目。
 
 ## 如何使用?
 
 ```bash
 # 运行
-npm start
-
+npm run dev
 # 构建
-npm build
+npm run build
 ```
 
 ## 如何新增文件？
@@ -17,6 +18,8 @@ npm build
 2. 然后新建一个同名的 `pug` 和 `jsx` 文件
 
 3. `src/demo/index.pug` `src/demo/index.jsx`
+
+4. 重新运行项目即可看到页面
 
 ## 构建出来的静态文件如何上传七牛？
 

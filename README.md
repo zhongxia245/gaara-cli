@@ -6,6 +6,28 @@
 - 支持开发环境热更新
 - 支持每个页面使用自己的 html 模板
 
-## Why is Gaara?
+## 为什么是 Gaara ？
 
 在写这个 node 命令的时候，突然想起了火影里面的我爱罗，so...
+
+## 如何使用？
+
+```bash
+npm install -g gaara-cli
+
+# 初始化基础脚手架
+gaara init
+
+# 进入项目目录，比如叫 gaara-demo
+cd gaara-demo
+
+npm install
+
+npm run dev
+
+npm run build
+```
+
+## 如何升级脚手架
+
+在应用项目里面，修改 `gaara-cli` 的版本号即可， 此项目升级会兼容老版本。

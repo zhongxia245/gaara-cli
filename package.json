@@ -1,6 +1,6 @@
 {
-  "name": "gaara",
-  "version": "0.0.1",
+  "name": "gaara-cli",
+  "version": "0.0.2",
   "description": "开箱即用的多页面 webpack 项目",
   "main": "index.js",
   "bin": {
@@ -20,7 +20,7 @@
     "webpack",
     "multiple pages"
   ],
-  "author": "",
+  "author": "zhongxia",
   "license": "ISC",
   "dependencies": {
     "@babel/core": "^7.4.3",

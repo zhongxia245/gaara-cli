@@ -19,12 +19,11 @@ const paths = require('./paths')
  * @param {Boolean} hotReload 是否需要热更新
  */
 const getEntries = (pattern, hotReload) => {
-  var fileList = glob.sync(pattern)
+  let fileList = glob.sync(pattern)
   return fileList.reduce((previous, current) => {
-    var filePath = path.parse(path.relative(paths.resolveApp(CONFIG.inputPath), current))
-    console.log('*****', filePath)
+    let filePath = path.parse(path.relative(paths.resolveApp(CONFIG.inputPath), current))
 
-    var withoutSuffix = path.join(filePath.dir, filePath.name)
+    let withoutSuffix = path.join(filePath.dir, filePath.name)
     if (hotReload) {
       // 多页面，需要对每个入口添加 热更新的配置
       previous[withoutSuffix] = [
