@@ -28,10 +28,10 @@ const getEntries = (pattern, hotReload) => {
       // 多页面，需要对每个入口添加 热更新的配置
       previous[withoutSuffix] = [
         require.resolve('react-dev-utils/webpackHotDevClient'), // 这个是 create-react-app 优化过的热更新功能
-        path.resolve(process.cwd(), current)
+        paths.resolveApp(current)
       ]
     } else {
-      previous[withoutSuffix] = path.resolve(process.cwd(), current)
+      previous[withoutSuffix] = paths.resolveApp(current)
     }
 
     return previous
@@ -43,8 +43,6 @@ module.exports = function(isDev) {
   const htmlRegx = `${CONFIG.inputPath}/**/*.pug`
   const jsEntries = CONFIG.isLocal && getEntries(jsRegx, isDev)
   const htmlEntries = getEntries(htmlRegx)
-
-  console.log(jsEntries, htmlEntries)
 
   let htmlPlugins = []
 

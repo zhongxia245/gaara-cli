@@ -25,7 +25,7 @@ const defaultConfig = {
   // 代理配置
   proxy: {},
   // 入口目录(这里指向模板项目)
-  inputPath: 'template/src',
+  inputPath: 'template/simple/src',
   // 输出目录
   outputPath: 'dist',
   // 文件引用路径别名

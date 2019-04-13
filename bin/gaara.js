@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-const commander = require('commander')
-const chalk = require('chalk')
+const program = require('commander')
+const { red } = require('chalk')
 const spawn = require('react-dev-utils/crossSpawn')
-
-const { red } = chalk
+const packageJson = require('../package.json')
 
 function runScript(script, args) {
   const nodeArgs = []
@@ -13,57 +12,59 @@ function runScript(script, args) {
   process.exit(result.status)
 }
 
-let cmdValue
-
-commander
-  .version('0.0.1')
-  .description('A webpack multiple page node cli application')
-  .action(function(cmd) {
-    cmdValue = cmd
-  })
-
-commander.on('--help', function() {
-  console.log('')
-  console.log('Examples:')
-  console.log(`  $ gaara dev     : Run webpack dev server`)
-  console.log(`  $ gaara build   : Build assets`)
-  console.log(`  $ gaara init    : Generate a new project`)
-  console.log(`  $ gaara analyze : Analyze assets info`)
-})
+program.version(packageJson.version).description(packageJson.description)
 
 // 运行本地环境
-commander
+// 添加只构建某个页面
+program
   .command('dev')
-  .option('-P, --post', 'set run port [default:3000]')
+  .description('start a webpack dev server')
   .option('-I, --inputPath', 'set inputPath [default: src]')
   .action(() => {
     runScript('dev', process.argv.slice(2))
   })
 
 // 构建线上代码包
-commander.command('build').action(() => {
-  runScript('build', process.argv.slice(2))
-})
+program
+  .command('build')
+  .description('build project assets')
+  .action(() => {
+    runScript('build', process.argv.slice(2))
+  })
 
 // 分析构建文件大小
-commander.command('analyze').action(() => {
-  runScript('analyze', process.argv.slice(2))
-})
+program
+  .command('analyze')
+  .description('analyze webpack bundle file size')
+  .action(() => {
+    runScript('analyze', process.argv.slice(2))
+  })
 
 // 分析构建文件大小
-commander.command('init', 'Generate a new multiple page project').action(env => {
-  runScript('init', process.argv.slice(2))
-  console.log(env, process.argv.slice(2))
-})
+program
+  .command('init <dir>')
+  .description('Generate a new multiple page project')
+  .action(() => {
+    runScript('init', process.argv.slice(2))
+  })
 
-commander.on('command:*', function(env) {
-  console.error(red(`Invalid command: ${env[0]} \nSee --help for a list of available commands.`))
+// 新增页面
+program
+  .command('generator <type> <pageName>')
+  .alias('g')
+  .description('add new page, eg: gaara add page demo/test')
+  .action(() => {
+    runScript('generator', process.argv.slice(2))
+  })
+
+program.on('command:*', function(env) {
+  console.error(red(`Invalid command: gaara ${env[0]} \nSee --help for a list of available commands.`))
   process.exit(1)
 })
 
-commander.parse(process.argv)
+program.parse(process.argv)
 
 // 如果没有传递命令，则默认展示提示信息
-if (cmdValue === undefined) {
-  commander.emit('--help')
+if (!process.argv.slice(2).length) {
+  program.outputHelp()
 }

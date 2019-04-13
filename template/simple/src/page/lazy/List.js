@@ -8,7 +8,7 @@ for (let i = 0; i < 10000; i++) {
 export default () => {
   return (
     <div>
-      <h1>This is a List</h1>
+      <h1>This is a lazy list</h1>
       <ul>
         {data.map((item, index) => {
           return <li key={index}>List Index:{item}</li>

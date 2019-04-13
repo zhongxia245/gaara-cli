@@ -1,8 +1,6 @@
 const webpack = require('webpack')
-const chalk = require('chalk')
+const { yellow, red } = require('chalk')
 const webpackConfig = require('../webpack.prod.config')
-
-const { yellow, red } = chalk
 
 webpack(webpackConfig, (err, stats) => {
   if (err) {

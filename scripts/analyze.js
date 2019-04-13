@@ -2,11 +2,9 @@
  * 注意，如果把静态资源上传到CDN，则这里需要过滤掉上传到 CDN 的操作
  */
 const webpack = require('webpack')
-const chalk = require('chalk')
+const { yellow, red } = require('chalk')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
-const webpackConfig = require('../webpack.prod.config')
-
-const { yellow, red } = chalk
+const webpackConfig = require('../config/webpack.prod.config')
 
 webpackConfig.plugins.push(new BundleAnalyzerPlugin())
 

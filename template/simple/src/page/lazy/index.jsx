@@ -1,14 +1,13 @@
 import React, { Component, lazy, Suspense } from 'react'
 import ReactDOM from 'react-dom'
 
-const List = lazy(() => import('./List.js'))
+const List = lazy(() => import(/* webpackChunkName: "page/lazy/chunk-list" */ './List.js'))
 
 class Demo extends Component {
   render() {
     return (
       <div>
-        <h3>This ia a Demo Page!</h3>
-        <p>5555555123123123123123123123123123123123123</p>
+        <h3>This is a Lazy Component Demo !</h3>
         <Suspense fallback={<div>Loading...</div>}>
           <List />
         </Suspense>
