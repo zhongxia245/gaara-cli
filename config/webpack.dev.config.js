@@ -12,7 +12,6 @@ const CONFIG = require('./config')
 const paths = require('./paths')
 
 module.exports = merge(webpackBaseConfig(true), {
-  stats: 'errors-only',
   mode: 'development',
   devtool: '#cheap-module-eval-source-map',
   output: {
@@ -31,12 +30,12 @@ module.exports = merge(webpackBaseConfig(true), {
   devServer: {
     contentBase: paths.resolveApp(CONFIG.outputPath),
     port: CONFIG.port,
-    host: '0.0.0.0',
+    host: 'localhost',
     watchContentBase: true,
     hot: true,
     inline: true,
     publicPath: '/',
-    // quiet: true,
+    stats: 'errors-only',
     compress: true,
     proxy: CONFIG.proxy,
     historyApiFallback: { disableDotRule: true },

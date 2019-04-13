@@ -2,10 +2,8 @@
  * 2019-04-07 13:29:48
  * webpack 的一些 公共配置
  */
-const os = require('os')
 const path = require('path')
 const glob = require('glob')
-const HappyPack = require('happypack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const WebpackBar = require('webpackbar')
@@ -39,14 +37,18 @@ const getEntries = (pattern, hotReload) => {
 }
 
 // postcss 的配置
-const postCssConfig = [
-  require('postcss-import'),
-  require('postcss-preset-env')({
-    browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 8', 'iOS >= 8', 'Android >= 4']
-  })
-]
+const postCssConfig = {
+  ident: 'postcss',
+  plugins: [
+    require('postcss-import')(),
+    require('postcss-preset-env')({
+      browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 8', 'iOS >= 8', 'Android >= 4']
+    })
+  ]
+}
+
 if (CONFIG.usePx2Rem) {
-  postCssConfig.push(
+  postCssConfig.plugins.push(
     require('postcss-pxtorem')({
       rootValue: CONFIG.basePixel,
       propWhiteList: []
@@ -66,7 +68,7 @@ module.exports = function(isDev) {
     const config = {
       filename: htmlEntry + '.html',
       template: htmlEntries[htmlEntry],
-      // 注入公共模块
+      // 注入公共模块 ,就是 splitChunks 里面的 default模块
       chunks: ['default'],
       inject: true,
       hash: CONFIG.isLocal,
@@ -93,65 +95,8 @@ module.exports = function(isDev) {
     htmlPlugins.push(new HtmlWebpackPlugin(config))
   }
 
-  const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
-
   // 插件配置
   let plugins = [
-    new HappyPack({
-      id: 'pug',
-      threadPool: happyThreadPool,
-      loaders: ['pug-loader']
-    }),
-    new HappyPack({
-      id: 'json',
-      threadPool: happyThreadPool,
-      loaders: ['json-loader']
-    }),
-    new HappyPack({
-      id: 'jsx',
-      threadPool: happyThreadPool,
-      loaders: [
-        {
-          loader: 'babel-loader',
-          options: {
-            plugins: [
-              require.resolve('styled-jsx/babel'),
-              require.resolve('@babel/plugin-transform-react-jsx'),
-              require.resolve('@babel/plugin-syntax-dynamic-import'),
-              require.resolve('@babel/plugin-proposal-class-properties'),
-              ['import', { libraryName: 'ant-mobile', libraryDirectory: 'lib' }, 'ant-mobile']
-            ],
-            presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-react')]
-          }
-        }
-      ]
-    }),
-    new HappyPack({
-      id: 'css',
-      threadPool: happyThreadPool,
-      loaders: [
-        'css-loader',
-        {
-          loader: 'postcss-loader',
-          options: postCssConfig
-        }
-      ]
-    }),
-    new HappyPack({
-      id: 'less',
-      threadPool: happyThreadPool,
-      loaders: [
-        'css-loader',
-        {
-          loader: 'postcss-loader',
-          options: postCssConfig
-        },
-        {
-          loader: 'less-loader',
-          options: CONFIG.lessOption
-        }
-      ]
-    }),
     ...htmlPlugins,
     new MiniCssExtractPlugin({
       filename: CONFIG.isLocal ? '[name].css' : '[name]-[contenthash].css'
@@ -160,6 +105,21 @@ module.exports = function(isDev) {
   ]
 
   return {
+    // 构建后，只输出构建时间信息和错误信息
+    stats: {
+      colors: true,
+      modules: false,
+      children: false,
+      chunks: false,
+      chunkModules: false,
+      chunkOrigins: false,
+      moduleTrace: false,
+      publicPath: false,
+      assets: true,
+      entrypoints: false,
+      warnings: false,
+      performance: true
+    },
     entry: {
       ...CONFIG.chunks,
       ...jsEntries
@@ -177,11 +137,12 @@ module.exports = function(isDev) {
       splitChunks: {
         cacheGroups: {
           default: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendor',
+            test: /(react|react-dom)/,
+            name: `${CONFIG.inputPath}/chunks/vendor`,
             chunks: 'all',
             priority: 10
-          }
+          },
+          vendors: false
         }
       }
     },
@@ -193,24 +154,56 @@ module.exports = function(isDev) {
       rules: [
         {
           test: /\.pug$/,
-          use: 'happypack/loader?id=pug'
+          use: 'pug-loader'
         },
         {
           test: /\.json$/,
-          use: 'happypack/loader?id=json'
+          use: 'json-loader'
         },
         {
           test: /\.jsx?$/,
-          use: 'happypack/loader?id=jsx',
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                plugins: [
+                  require.resolve('styled-jsx/babel'),
+                  require.resolve('@babel/plugin-transform-react-jsx'),
+                  require.resolve('@babel/plugin-syntax-dynamic-import'),
+                  require.resolve('@babel/plugin-proposal-class-properties'),
+                  ['import', { libraryName: 'antd-mobile', style: 'css' }]
+                ],
+                presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-react')]
+              }
+            }
+          ],
           exclude: /node_modules/
         },
         {
           test: /\.css$/,
-          use: [MiniCssExtractPlugin.loader, 'happypack/loader?id=css']
+          use: [
+            MiniCssExtractPlugin.loader,
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: postCssConfig
+            }
+          ]
         },
         {
           test: /\.less$/,
-          use: [MiniCssExtractPlugin.loader, 'happypack/loader?id=less']
+          use: [
+            MiniCssExtractPlugin.loader,
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: postCssConfig
+            },
+            {
+              loader: 'less-loader',
+              options: CONFIG.lessOption
+            }
+          ]
         },
         {
           test: /\.(jpg|png|gif|svg|ico)$/,
