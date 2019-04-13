@@ -1,0 +1,25 @@
+{
+  "name": "gaara-demo",
+  "version": "0.0.1",
+  "description": "A multiple page project .",
+  "main": "index.js",
+  "scripts": {
+    "dev": "gaara dev",
+    "build": "gaara build",
+    "analyze": "gaara analyze"
+  },
+  "keywords": [
+    "react",
+    "webpack",
+    "multiple pages"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gaara": "*"
+  },
+  "dependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  }
+}

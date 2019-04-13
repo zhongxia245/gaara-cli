@@ -4,32 +4,35 @@
  */
 const os = require('os')
 const path = require('path')
-const webpack = require('webpack')
 const glob = require('glob')
 const HappyPack = require('happypack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const WebpackBar = require('webpackbar')
 const CONFIG = require('./config')
+const paths = require('./paths')
 
 /**
- * 根据匹配规则输出正确的文件路径
+ * 根据匹配规则输出指定后缀得文件
+ *
  * @param {String}  pattern 匹配规则
  * @param {Boolean} hotReload 是否需要热更新
  */
 const getEntries = (pattern, hotReload) => {
   var fileList = glob.sync(pattern)
   return fileList.reduce((previous, current) => {
-    var filePath = path.parse(path.relative(path.resolve(__dirname, './template/src'), current))
+    var filePath = path.parse(path.relative(paths.resolveApp(CONFIG.inputPath), current))
+    console.log('*****', filePath)
+
     var withoutSuffix = path.join(filePath.dir, filePath.name)
     if (hotReload) {
       // 多页面，需要对每个入口添加 热更新的配置
       previous[withoutSuffix] = [
         require.resolve('react-dev-utils/webpackHotDevClient'), // 这个是 create-react-app 优化过的热更新功能
-        path.resolve(__dirname, current)
+        path.resolve(process.cwd(), current)
       ]
     } else {
-      previous[withoutSuffix] = path.resolve(__dirname, current)
+      previous[withoutSuffix] = path.resolve(process.cwd(), current)
     }
 
     return previous
@@ -37,12 +40,15 @@ const getEntries = (pattern, hotReload) => {
 }
 
 module.exports = function(isDev) {
-  const jsRegx = `template/src/${CONFIG.inputPath}/**/*.jsx`
-  const htmlRegx = `template/src/${CONFIG.inputPath}/**/*.pug`
-  const jsEntries = CONFIG.isLocal && CONFIG.useOnly ? CONFIG.only : getEntries(jsRegx, isDev)
+  const jsRegx = `${CONFIG.inputPath}/**/*.jsx`
+  const htmlRegx = `${CONFIG.inputPath}/**/*.pug`
+  const jsEntries = CONFIG.isLocal && getEntries(jsRegx, isDev)
   const htmlEntries = getEntries(htmlRegx)
 
+  console.log(jsEntries, htmlEntries)
+
   let htmlPlugins = []
+
   for (htmlEntry in htmlEntries) {
     const config = {
       filename: htmlEntry + '.html',
@@ -58,16 +64,19 @@ module.exports = function(isDev) {
         collapseWhitespace: false
       }
     }
+
     // 注入公共库
     for (key in CONFIG.chunks) {
       config.chunks.push(key)
     }
+
     // 遍历判断注入
     for (jsEntry in jsEntries) {
       if (CONFIG.injectCheck(htmlEntry, jsEntry)) {
         config.chunks.push(jsEntry)
       }
     }
+
     htmlPlugins.push(new HtmlWebpackPlugin(config))
   }
 
@@ -88,7 +97,21 @@ module.exports = function(isDev) {
     new HappyPack({
       id: 'jsx',
       threadPool: happyThreadPool,
-      loaders: ['babel-loader?cacheDirectory']
+      loaders: [
+        {
+          loader: 'babel-loader',
+          options: {
+            plugins: [
+              require.resolve('styled-jsx/babel'),
+              require.resolve('@babel/plugin-transform-react-jsx'),
+              require.resolve('@babel/plugin-syntax-dynamic-import'),
+              ['import', { libraryName: 'ant-mobile', libraryDirectory: 'lib' }, 'ant-mobile'],
+              ['import', { libraryName: 'antd', libraryDirectory: 'lib' }, 'ant']
+            ],
+            presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-react')]
+          }
+        }
+      ]
     }),
     new HappyPack({
       id: 'css',
@@ -121,7 +144,7 @@ module.exports = function(isDev) {
     },
     output: {
       // 静态资源文件的本机输出目录
-      path: path.resolve(__dirname, CONFIG.outputPath),
+      path: paths.resolveApp(CONFIG.outputPath),
       // 静态资源服务器发布目录
       publicPath: '/',
       // 入口文件名称配置

@@ -13,12 +13,13 @@ function runScript(script, args) {
   process.exit(result.status)
 }
 
+let cmdValue
+
 commander
   .version('0.0.1')
-  .description('A Multiple Page Webpack cli application')
-  .action(function(cmd, env) {
+  .description('A webpack multiple page node cli application')
+  .action(function(cmd) {
     cmdValue = cmd
-    envValue = env
   })
 
 commander.on('--help', function() {
@@ -50,7 +51,7 @@ commander.command('analyze').action(() => {
 })
 
 // 分析构建文件大小
-commander.command('init').action(env => {
+commander.command('init', 'Generate a new multiple page project').action(env => {
   runScript('init', process.argv.slice(2))
   console.log(env, process.argv.slice(2))
 })
@@ -61,3 +62,8 @@ commander.on('command:*', function(env) {
 })
 
 commander.parse(process.argv)
+
+// 如果没有传递命令，则默认展示提示信息
+if (cmdValue === undefined) {
+  commander.emit('--help')
+}

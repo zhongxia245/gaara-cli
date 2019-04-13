@@ -9,6 +9,7 @@ const merge = require('webpack-merge')
 
 const webpackBaseConfig = require('./webpack.base.config')
 const CONFIG = require('./config')
+const paths = require('./paths')
 
 module.exports = merge(webpackBaseConfig(true), {
   stats: 'errors-only',
@@ -28,14 +29,14 @@ module.exports = merge(webpackBaseConfig(true), {
     new webpack.HotModuleReplacementPlugin()
   ],
   devServer: {
-    contentBase: path.resolve(__dirname, CONFIG.outputPath),
+    contentBase: paths.resolveApp(CONFIG.outputPath),
     port: CONFIG.port,
     host: '0.0.0.0',
     watchContentBase: true,
     hot: true,
     inline: true,
     publicPath: '/',
-    quiet: true,
+    // quiet: true,
     compress: true,
     proxy: CONFIG.proxy,
     historyApiFallback: { disableDotRule: true },

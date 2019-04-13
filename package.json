@@ -6,6 +6,9 @@
   "bin": {
     "gaara": "./bin/gaara.js"
   },
+  "engines": {
+    "node": ">=8.10"
+  },
   "scripts": {
     "start": "node scripts/dev.js",
     "dev": "npm start",
@@ -19,7 +22,7 @@
   ],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "@babel/core": "^7.4.3",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-react-jsx": "^7.3.0",
@@ -60,7 +63,7 @@
     "webpack-merge": "^4.2.1",
     "webpackbar": "^3.1.5"
   },
-  "dependencies": {
+  "devDependencies": {
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   }

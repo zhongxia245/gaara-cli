@@ -1,11 +1,11 @@
-const path = require('path')
 const fs = require('fs')
+const paths = require('./paths')
 
 const isProd = process.env.NODE_ENV === 'production'
 
 // 加载项目自定义配置
-const loadConfig = sourceDir => {
-  const configPath = path.resolve(sourceDir, './config.js')
+const loadConfig = () => {
+  const configPath = paths.resolveApp('config.js')
   let config = {}
   if (fs.existsSync(configPath)) {
     config = require(configPath)
@@ -24,8 +24,8 @@ const defaultConfig = {
   port: 3000,
   // 代理配置
   proxy: {},
-  // 入口目录
-  inputPath: './',
+  // 入口目录(这里指向模板项目)
+  inputPath: 'template/src',
   // 输出目录
   outputPath: 'dist',
   // 文件引用路径别名
@@ -34,10 +34,6 @@ const defaultConfig = {
   basePixel: 16,
   // 公共模块
   chunks: {},
-  // 选择性打包开关
-  useOnly: false,
-  // 选择性打包入口
-  only: {},
   // less 打包配置
   lessOption: {},
   // js 选择性注入判断函数
@@ -46,9 +42,9 @@ const defaultConfig = {
   }
 }
 
-const projectConfig = loadConfig(path.resolve(__dirname, './src'))
-
+const projectConfig = loadConfig()
 const CONFIG = { ...defaultConfig, ...projectConfig }
+
 const tools = {
   // [`${CONFIG.inputPath}/packages/tools/common`]: path.resolve(__dirname, './packages/tools/common.js')
 }
