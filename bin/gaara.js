@@ -19,15 +19,15 @@ program.version(packageJson.version).description(packageJson.description)
 program
   .command('dev')
   .description('start a webpack dev server')
-  .option('-I, --inputPath', 'set inputPath [default: src]')
   .action(() => {
     runScript('dev', process.argv.slice(2))
   })
 
-// 构建线上代码包
+// 构建代码包
 program
   .command('build')
-  .description('build project assets')
+  .description('build project assets and upload cdn')
+  .option('-N', 'not upload assets to CDN')
   .action(() => {
     runScript('build', process.argv.slice(2))
   })

@@ -19,7 +19,7 @@ const paths = require('./paths')
 const getEntries = (pattern, hotReload) => {
   let fileList = glob.sync(pattern)
   return fileList.reduce((previous, current) => {
-    let filePath = path.parse(path.relative(paths.resolveApp(''), current))
+    let filePath = path.parse(path.relative(paths.resolveApp(CONFIG.inputPath), current))
 
     let withoutSuffix = path.join(filePath.dir, filePath.name)
 
@@ -57,9 +57,37 @@ if (CONFIG.usePx2Rem) {
   )
 }
 
-module.exports = function(isDev) {
-  const jsRegx = `${CONFIG.inputPath}/**/*.jsx`
-  const htmlRegx = `${CONFIG.inputPath}/**/*.pug`
+// babel 配置
+const babelOptions = {
+  plugins: [
+    [
+      '@babel/plugin-transform-runtime',
+      {
+        absoluteRuntime: false,
+        corejs: false,
+        helpers: true,
+        regenerator: true,
+        useESModules: false
+      }
+    ],
+    require.resolve('@babel/plugin-transform-react-jsx'),
+    require.resolve('@babel/plugin-syntax-dynamic-import'),
+    require.resolve('@babel/plugin-proposal-class-properties'),
+    require.resolve('styled-jsx/babel'),
+    ['import', { libraryName: 'antd-mobile', style: 'css' }]
+  ],
+  presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-react')]
+}
+
+/**
+ * @param {boolean} isDev 是否为测试环境，测试环境由热刷新
+ * @param {string} inputPath 指定构建的目录，打包部分，加快构建速度
+ */
+module.exports = (isDev, inputPath = '') => {
+  // 指定某个路径的话，则只构建某个目录下的页面
+  const jsRegx = `${CONFIG.inputPath}${inputPath && `/${inputPath}`}/**/*.jsx`
+  const htmlRegx = `${CONFIG.inputPath}${inputPath && `/${inputPath}`}/**/*.pug`
+
   const jsEntries = CONFIG.isLocal && getEntries(jsRegx, isDev)
   const htmlEntries = getEntries(htmlRegx)
 
@@ -166,26 +194,7 @@ module.exports = function(isDev) {
           use: [
             {
               loader: 'babel-loader',
-              options: {
-                plugins: [
-                  [
-                    '@babel/plugin-transform-runtime',
-                    {
-                      absoluteRuntime: false,
-                      corejs: false,
-                      helpers: true,
-                      regenerator: true,
-                      useESModules: false
-                    }
-                  ],
-                  require.resolve('@babel/plugin-transform-react-jsx'),
-                  require.resolve('@babel/plugin-syntax-dynamic-import'),
-                  require.resolve('@babel/plugin-proposal-class-properties'),
-                  require.resolve('styled-jsx/babel'),
-                  ['import', { libraryName: 'antd-mobile', style: 'css' }]
-                ],
-                presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-react')]
-              }
+              options: babelOptions
             }
           ],
           exclude: /node_modules/

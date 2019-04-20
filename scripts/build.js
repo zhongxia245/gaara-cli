@@ -1,8 +1,11 @@
 const webpack = require('webpack')
 const { yellow, red } = require('chalk')
-const webpackConfig = require('../config/webpack.prod.config')
+const getWebpackProdConfig = require('../config/webpack.prod.config')
 
-webpack(webpackConfig, (err, stats) => {
+// 判断是否需要上传 CDN
+let notUploadCdn = process.argv.slice(2).indexOf('-N') !== -1
+
+webpack(getWebpackProdConfig(notUploadCdn), (err, stats) => {
   if (err) {
     console.error(red(err.stack || err))
     if (err.details) {

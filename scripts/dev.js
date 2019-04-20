@@ -5,10 +5,14 @@
  */
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
-const { cyan, red } = require('chalk')
+const { green, red } = require('chalk')
 const { choosePort } = require('react-dev-utils/WebpackDevServerUtils')
 const openBrowser = require('react-dev-utils/openBrowser')
-const webpackConfig = require('../config/webpack.dev.config')
+const getWebpackDevConfig = require('../config/webpack.dev.config')
+
+// 指定运行某个模块
+let inputPath = process.argv.slice(2)[0]
+const webpackConfig = getWebpackDevConfig(inputPath)
 
 let HOST = webpackConfig.devServer.host
 let currentPort = webpackConfig.devServer.port
@@ -29,7 +33,7 @@ choosePort(HOST, currentPort).then(port => {
         return console.log(err)
       }
       openBrowser(`http://${HOST}:${currentPort}`)
-      console.log(cyan(`Starting the development server...\n address: http://${HOST}:${currentPort}`))
+      console.log(green(`Starting the development server...\naddress: http://${HOST}:${currentPort}`))
     })
   } catch (error) {
     console.log(red(error))
