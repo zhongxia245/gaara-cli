@@ -21,7 +21,7 @@ const defaultConfig = {
   // 是否为生产环境
   isProd: isProd,
   // 运行端口
-  port: 3000,
+  port: 11000,
   // 代理配置
   proxy: {},
   // 入口目录(这里指向模板项目)

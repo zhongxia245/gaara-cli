@@ -26,10 +26,21 @@ webpack(webpackConfig, (err, stats) => {
     })
   }
 
+  // 输出构建信息， 只输出构建时间和模块包
   console.log(
     stats.toString({
-      chunks: false, // 使构建过程更静默无输出
-      colors: true // 在控制台展示颜色
+      colors: true,
+      modules: false,
+      children: false,
+      chunks: false,
+      chunkModules: false,
+      chunkOrigins: false,
+      moduleTrace: false,
+      publicPath: false,
+      assets: true,
+      entrypoints: false,
+      warnings: false,
+      performance: true
     })
   )
 })

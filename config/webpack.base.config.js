@@ -19,9 +19,10 @@ const paths = require('./paths')
 const getEntries = (pattern, hotReload) => {
   let fileList = glob.sync(pattern)
   return fileList.reduce((previous, current) => {
-    let filePath = path.parse(path.relative(paths.resolveApp(CONFIG.inputPath), current))
+    let filePath = path.parse(path.relative(paths.resolveApp(''), current))
 
     let withoutSuffix = path.join(filePath.dir, filePath.name)
+
     if (hotReload) {
       // 多页面，需要对每个入口添加 热更新的配置
       previous[withoutSuffix] = [
@@ -167,10 +168,20 @@ module.exports = function(isDev) {
               loader: 'babel-loader',
               options: {
                 plugins: [
-                  require.resolve('styled-jsx/babel'),
+                  [
+                    '@babel/plugin-transform-runtime',
+                    {
+                      absoluteRuntime: false,
+                      corejs: false,
+                      helpers: true,
+                      regenerator: true,
+                      useESModules: false
+                    }
+                  ],
                   require.resolve('@babel/plugin-transform-react-jsx'),
                   require.resolve('@babel/plugin-syntax-dynamic-import'),
                   require.resolve('@babel/plugin-proposal-class-properties'),
+                  require.resolve('styled-jsx/babel'),
                   ['import', { libraryName: 'antd-mobile', style: 'css' }]
                 ],
                 presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-react')]
