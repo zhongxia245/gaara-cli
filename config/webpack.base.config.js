@@ -163,11 +163,17 @@ module.exports = (isDev, inputPath = '') => {
       ]
     }),
     ...htmlPlugins,
-    new MiniCssExtractPlugin({
-      filename: CONFIG.isLocal ? '[name].css' : '[name]-[contenthash].css'
-    }),
     new WebpackBar()
   ]
+
+  // 非本地环境，则抽离CSS，本地使用 style-loader 注入页面， 支持 HMR
+  if (CONFIG.isProd) {
+    plugins.push(
+      new MiniCssExtractPlugin({
+        filename: '[name]-[contenthash].css'
+      })
+    )
+  }
 
   return {
     // 构建后，只输出构建时间信息和错误信息
@@ -258,7 +264,7 @@ module.exports = (isDev, inputPath = '') => {
         {
           test: /\.css$/,
           use: [
-            MiniCssExtractPlugin.loader,
+            CONFIG.isLocal ? 'style-loader' : MiniCssExtractPlugin.loader,
             'css-loader',
             {
               loader: 'postcss-loader',
@@ -269,7 +275,7 @@ module.exports = (isDev, inputPath = '') => {
         {
           test: /\.less$/,
           use: [
-            MiniCssExtractPlugin.loader,
+            CONFIG.isLocal ? 'style-loader' : MiniCssExtractPlugin.loader,
             'css-loader',
             {
               loader: 'postcss-loader',
