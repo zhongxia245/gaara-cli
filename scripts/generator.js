@@ -9,7 +9,9 @@ const { resolveOwn, resolveApp } = require('../config/paths')
 
 const generatorPage = async () => {
   let [type, pageName] = process.argv.slice(2)
-  pageName = path.join('src', pageName)
+
+  // 当前目录下，加目录名
+  pageName = path.join(process.cwd(), pageName)
 
   switch (type) {
     case 'page':
