@@ -44,9 +44,6 @@ npm run build
 npm run lint:fix
 ```
 
-> 运行效果
-> ![](https://ws4.sinaimg.cn/large/006tNc79gy1g2alhxjqvxg30or0m54ki.gif)
-
 ## 如何升级脚手架
 
 在应用项目里面，修改 `gaara-cli` 的版本号即可， 此项目升级会兼容老版本。
