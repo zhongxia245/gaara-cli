@@ -13,10 +13,25 @@ const CONFIG = require('./config')
 const getWebpackBaseConfig = require('./webpack.base.config')
 
 module.exports = needUploadCdn => {
-  let publicPath = '/'
+  let webpackProdConfig = {
+    mode: 'production',
+    output: {
+      publicPath: '/',
+      filename: '[name]-[contenthash].js',
+      chunkFilename: '[name]-[contenthash].js'
+    },
+    plugins: [
+      new CleanWebpackPlugin(),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('production'),
+        ...CONFIG.environments
+      }),
+      new OptimizeCssAssetsPlugin()
+    ]
+  }
 
   if (needUploadCdn) {
-    publicPath = process.env.PUBLIC_PATH
+    webpackProdConfig.output.publicPath = process.env.PUBLIC_PATH || '/'
 
     // 是否配置了阿里云 CDN 的参数
     const isUploadAliyun =
@@ -47,23 +62,6 @@ module.exports = needUploadCdn => {
         })
       )
     }
-  }
-
-  let webpackProdConfig = {
-    mode: 'production',
-    output: {
-      publicPath: publicPath,
-      filename: '[name]-[contenthash].js',
-      chunkFilename: '[name]-[contenthash].js'
-    },
-    plugins: [
-      new CleanWebpackPlugin(),
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify('production'),
-        ...CONFIG.environments
-      }),
-      new OptimizeCssAssetsPlugin()
-    ]
   }
 
   return merge(getWebpackBaseConfig(false), webpackProdConfig)

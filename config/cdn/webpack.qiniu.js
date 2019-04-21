@@ -16,7 +16,6 @@ module.exports = class QiniuPlugin {
   apply(compiler) {
     compiler.hooks.afterEmit.tap('after-emit', compilation => {
       let assets = compilation.assets
-      let hash = compilation.hash
       let uploadPath = this.options.path
       let exclude = is.regexp(this.options.exclude) && this.options.exclude
       let include = is.regexp(this.options.include) && this.options.include
@@ -32,8 +31,13 @@ module.exports = class QiniuPlugin {
       let totalFiles = 0
       let uploadedFiles = 0
 
+      let spinner = ora({
+        text: progress(0, totalFiles),
+        color: 'green'
+      }).start()
+
       // 结束提示
-      let finish = err => {
+      let finish = () => {
         spinner.succeed()
         console.log('\n')
       }
@@ -55,11 +59,6 @@ module.exports = class QiniuPlugin {
       })
 
       totalFiles = filesNames.length
-
-      let spinner = ora({
-        text: progress(0, totalFiles),
-        color: 'green'
-      }).start()
 
       // 上传至七牛
       const performUpload = function(fileName) {

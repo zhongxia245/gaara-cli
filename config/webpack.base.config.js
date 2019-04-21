@@ -87,7 +87,7 @@ module.exports = (isDev, inputPath = '') => {
 
   let htmlPlugins = []
 
-  for (htmlEntry in htmlEntries) {
+  for (let htmlEntry in htmlEntries) {
     const config = {
       filename: htmlEntry + '.html',
       template: htmlEntries[htmlEntry],
@@ -104,12 +104,12 @@ module.exports = (isDev, inputPath = '') => {
     }
 
     // 注入公共库
-    for (key in CONFIG.chunks) {
+    for (let key in CONFIG.chunks) {
       config.chunks.push(key)
     }
 
     // 遍历判断注入
-    for (jsEntry in jsEntries) {
+    for (let jsEntry in jsEntries) {
       if (CONFIG.injectCheck(htmlEntry, jsEntry)) {
         config.chunks.push(jsEntry)
       }

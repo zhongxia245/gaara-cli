@@ -1,6 +1,6 @@
 /**
  * 开发环境的webpack 配置
- * 1. 增加了热更新
+ * 1. 增加了热刷新
  * 2. 设置 devServer 代理
  */
 const webpack = require('webpack')

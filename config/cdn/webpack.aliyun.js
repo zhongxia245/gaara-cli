@@ -31,8 +31,13 @@ module.exports = class AliyunPlugin {
         bucket: this.options.bucket
       })
 
+      let spinner = ora({
+        text: progress(0, totalFiles),
+        color: 'green'
+      }).start()
+
       // 结束提示
-      let finish = error => {
+      let finish = () => {
         spinner.succeed()
         console.log('\n')
       }
@@ -54,11 +59,6 @@ module.exports = class AliyunPlugin {
       })
 
       totalFiles = filesNames.length
-
-      let spinner = ora({
-        text: progress(0, totalFiles),
-        color: 'green'
-      }).start()
 
       // 上传至阿里云
       const performUpload = function(fileName) {
