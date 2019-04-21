@@ -20,6 +20,18 @@ npm install -g gaara-cli
 # 初始化基础脚手架
 gaara init
 
+# 生成多页面的页面模板
+gaara g page <pageName>
+
+# 运行项目
+gaara dev
+
+# 构建代码，并上传CDN（如果已配置 CDN 参数）
+gaara build
+
+# 构建代码，不上传 CDN
+gaara build -N
+
 # 进入项目目录，比如叫 gaara-demo
 cd gaara-demo
 
@@ -28,7 +40,12 @@ npm install
 npm run dev
 
 npm run build
+
+npm run lint:fix
 ```
+
+> 运行效果
+> ![](https://ws4.sinaimg.cn/large/006tNc79gy1g2alhxjqvxg30or0m54ki.gif)
 
 ## 如何升级脚手架
 
