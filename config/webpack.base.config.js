@@ -85,8 +85,8 @@ module.exports = (isDev, inputPath = '') => {
   const jsEntries = CONFIG.isLocal && getEntries(jsRegx, isDev)
   const htmlEntries = getEntries(htmlRegx)
 
+  // 生成 HTML 文件
   let htmlPlugins = []
-
   for (let htmlEntry in htmlEntries) {
     const config = {
       filename: htmlEntry + '.html',
@@ -205,9 +205,9 @@ module.exports = (isDev, inputPath = '') => {
       chunkFilename: '[name].js'
     },
     optimization: {
+      // 多进程压缩代码
       minimizer: [
         new ParallelUglifyPlugin({
-          // 多进程压缩
           cacheDir: '.cache/',
           uglifyJS: {
             output: {
@@ -237,30 +237,22 @@ module.exports = (isDev, inputPath = '') => {
       }
     },
     resolve: {
-      /**
-       * 没必要一层一层去找第三方模块
-       * webpack 默认去 node_modules 找第三方模块
-       * 如果没有找到，则往 ../node_modules 继续找
-       * 一直找到根目录，如果没有，则报找不到模块
-       */
-      // modules: [paths.resolveApp('node_modules')],
       extensions: ['.js', '.jsx', 'json'],
       alias: CONFIG.alias
     },
     module: {
-      // 忽略未采用模块化的文件，因此jquery或lodash将不会被下面的loaders解析
       rules: [
         {
           test: /\.pug$/,
           use: 'happypack/loader?id=pug',
           exclude: /node_modules/
         },
-
         {
           test: /\.jsx?$/,
           use: 'happypack/loader?id=jsx',
           exclude: /node_modules/
         },
+        // postcss 配置信息放在 webpack.config.js 里面， 则不支持使用 happypack
         {
           test: /\.css$/,
           use: [

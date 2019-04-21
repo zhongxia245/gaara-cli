@@ -4,10 +4,13 @@
   "description": "A multiple page project ~ ",
   "main": "index.js",
   "scripts": {
+    "start": "gaara dev",
     "dev": "gaara dev",
     "build:dev": "gaara build -N",
     "build": "gaara build",
-    "analyze": "gaara analyze"
+    "analyze": "gaara analyze",
+    "lint": "eslint --ext .jsx --ext .js .",
+    "lint:fix": "eslint --ext .jsx --ext .js . --fix"
   },
   "keywords": [
     "react",

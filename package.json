@@ -15,7 +15,8 @@
     "build:dev": "node scripts/build.js -N",
     "build": "node scripts/build.js",
     "analyze": "node scripts/analyze.js",
-    "lint": "eslint --ext .jsx --ext .js ."
+    "lint": "eslint --ext .jsx --ext .js .",
+    "lint:fix": "eslint --ext .jsx --ext .js . --fix"
   },
   "keywords": [
     "react",
