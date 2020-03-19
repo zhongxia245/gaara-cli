@@ -4,26 +4,26 @@
  * 需要重新组织一下代码
  * 部分优化，参考：http://louiszhai.github.io/2019/01/04/webpack4/
  */
-const path = require("path")
-const glob = require("glob")
-const os = require("os")
-const HappyPack = require("happypack")
-const HtmlWebpackPlugin = require("html-webpack-plugin")
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-const ParallelUglifyPlugin = require("webpack-parallel-uglify-plugin")
-const WebpackBar = require("webpackbar")
-const deasyncPromise = require("deasync-promise")
+const path = require("path");
+const glob = require("glob");
+const os = require("os");
+const HappyPack = require("happypack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const ParallelUglifyPlugin = require("webpack-parallel-uglify-plugin");
+const WebpackBar = require("webpackbar");
+const deasyncPromise = require("deasync-promise");
 // 用户与命令行交互的工具
-const inquirer = require("inquirer")
+const inquirer = require("inquirer");
 
-const CONFIG = require("./config")
-const paths = require("./paths")
+const CONFIG = require("./config");
+const paths = require("./paths");
 
-const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 inquirer.registerPrompt(
   "checkbox-plus",
   require("inquirer-checkbox-plus-prompt")
-)
+);
 
 /**
  * 根据匹配规则输出指定后缀得文件
@@ -31,25 +31,25 @@ inquirer.registerPrompt(
  * @param {Boolean} hotReload 是否需要热更新
  */
 const getEntries = (pattern, hotReload) => {
-  let fileList = glob.sync(pattern)
+  let fileList = glob.sync(pattern);
   return fileList.reduce((previous, current) => {
-    let filePath = path.parse(path.relative(paths.resolveApp(""), current))
+    let filePath = path.parse(path.relative(paths.resolveApp(""), current));
 
-    let withoutSuffix = path.join(filePath.dir, filePath.name)
+    let withoutSuffix = path.join(filePath.dir, filePath.name);
 
     if (hotReload) {
       // 多页面，需要对每个入口添加 热更新的配置
       previous[withoutSuffix] = [
         require.resolve("react-dev-utils/webpackHotDevClient"), // 这个是 create-react-app 优化过的热更新功能
         paths.resolveApp(current)
-      ]
+      ];
     } else {
-      previous[withoutSuffix] = paths.resolveApp(current)
+      previous[withoutSuffix] = paths.resolveApp(current);
     }
 
-    return previous
-  }, {})
-}
+    return previous;
+  }, {});
+};
 
 /**
  * 获取 postcss 的配置
@@ -73,20 +73,20 @@ const getPostcssConfig = () => {
       ]
     }),
     require("cssnano")()
-  ]
+  ];
   if (CONFIG.usePx2Rem) {
     plugins.push(
       require("postcss-pxtorem")({
         rootValue: CONFIG.basePixel,
         propWhiteList: []
       })
-    )
+    );
   }
   return {
     ident: "postcss",
     plugins: plugins
-  }
-}
+  };
+};
 
 /**
  * @param {boolean} isDev 是否为测试环境，测试环境由热刷新
@@ -94,11 +94,11 @@ const getPostcssConfig = () => {
  */
 module.exports = (isDev, isSelectPage) => {
   // 指定某个路径的话，则只构建某个目录下的页面
-  const jsRegx = `${CONFIG.inputPath}/**/*.jsx`
-  const htmlRegx = `${CONFIG.inputPath}/**/*.pug`
+  const jsRegx = `${CONFIG.inputPath}/**/*.jsx`;
+  const htmlRegx = `${CONFIG.inputPath}/**/*.pug`;
 
-  let jsEntrys = CONFIG.isLocal && getEntries(jsRegx, isDev)
-  let htmlEntrys = getEntries(htmlRegx)
+  let jsEntrys = CONFIG.isLocal && getEntries(jsRegx, isDev);
+  let htmlEntrys = getEntries(htmlRegx);
 
   // 本地开发，只启动部分页面
   if (isSelectPage) {
@@ -106,10 +106,10 @@ module.exports = (isDev, isSelectPage) => {
     // 选择完页面后，再 Ctrl+C 退出，则不会有问题
     console.warn(
       `[注意，注意，注意] 如需 Ctrl+C 退出，请先选择完入口在退出，否则会造成 Node 进程无法自动关闭，占用内存!!`
-    )
-    console.log()
+    );
+    console.log();
 
-    const htmlKeys = Object.keys(htmlEntrys)
+    const htmlKeys = Object.keys(htmlEntrys);
     const selectedKeys = deasyncPromise(
       inquirer.prompt([
         {
@@ -122,33 +122,36 @@ module.exports = (isDev, isSelectPage) => {
             name: v
           })),
           validate: v => {
-            return v.length >= 1 || "Please choose at least one"
+            return v.length >= 1 || "Please choose at least one";
           },
           source: function(answersSoFar, input) {
             return new Promise(resolve => {
               let currentEntry = htmlKeys.filter(
                 item => item.toLowerCase().indexOf(input || "") !== -1
-              )
-              resolve(currentEntry)
-            })
+              );
+              resolve(currentEntry);
+            });
           },
           pageSize: 18
         }
       ])
-    )
+    );
 
     // 过滤掉不打包的部分
     for (const key in htmlEntrys) {
       if (htmlEntrys.hasOwnProperty(key)) {
         if (selectedKeys.pages && selectedKeys.pages.indexOf(key) === -1) {
-          delete htmlEntrys[key]
+          delete htmlEntrys[key];
+          if (jsEntrys[key]) {
+            delete jsEntrys[key];
+          }
         }
       }
     }
   }
 
   // 生成 HTML 文件
-  let htmlPlugins = []
+  let htmlPlugins = [];
   for (let htmlKey in htmlEntrys) {
     const config = {
       filename: htmlKey + ".html",
@@ -163,28 +166,28 @@ module.exports = (isDev, isSelectPage) => {
         removeComments: true,
         collapseWhitespace: false
       }
-    }
+    };
 
     // 注入公共库
     for (let key in CONFIG.chunks) {
-      config.chunks.push(key)
+      config.chunks.push(key);
     }
 
     // 遍历判断注入
     for (let jsEntry in jsEntrys) {
       if (CONFIG.injectCheck(htmlKey, jsEntry)) {
-        config.chunks.push(jsEntry)
+        config.chunks.push(jsEntry);
       }
     }
 
-    htmlPlugins.push(new HtmlWebpackPlugin(config))
+    htmlPlugins.push(new HtmlWebpackPlugin(config));
   }
 
   // 开发环境，如果没有找到 index.html ，则展示 __index.html(页面列表清单) 当首页
   if (isDev) {
-    let filename = "index.html"
+    let filename = "index.html";
     if (Object.keys(htmlEntrys).includes("index")) {
-      filename = "__index.html"
+      filename = "__index.html";
     }
 
     htmlPlugins.push(
@@ -194,7 +197,7 @@ module.exports = (isDev, isSelectPage) => {
         filename,
         inject: false
       })
-    )
+    );
   }
 
   const babelOptions = {
@@ -220,7 +223,7 @@ module.exports = (isDev, isSelectPage) => {
       require.resolve("@babel/preset-env"),
       require.resolve("@babel/preset-react")
     ]
-  }
+  };
 
   // 插件配置
   let plugins = [
@@ -246,7 +249,7 @@ module.exports = (isDev, isSelectPage) => {
     }),
     ...htmlPlugins,
     new WebpackBar()
-  ]
+  ];
 
   // 非本地环境，则抽离CSS，本地使用 style-loader 注入页面， 支持 HMR
   if (CONFIG.isProd) {
@@ -254,7 +257,7 @@ module.exports = (isDev, isSelectPage) => {
       new MiniCssExtractPlugin({
         filename: "[name]-[contenthash].css"
       })
-    )
+    );
   }
 
   return {
@@ -389,5 +392,5 @@ module.exports = (isDev, isSelectPage) => {
       ]
     },
     plugins: plugins
-  }
-}
+  };
+};

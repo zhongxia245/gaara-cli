@@ -1,7 +1,9 @@
-import React, { Component, lazy, Suspense } from 'react'
-import ReactDOM from 'react-dom'
+import React, { Component, lazy, Suspense } from "react";
+import ReactDOM from "react-dom";
 
-const List = lazy(() => import(/* webpackChunkName: "page/lazy/chunk-list" */ './List.js'))
+const List = lazy(() =>
+  import(/* webpackChunkName: "page/lazy/chunk-list" */ "./List.js")
+);
 
 class Demo extends Component {
   render() {
@@ -12,8 +14,8 @@ class Demo extends Component {
           <List />
         </Suspense>
       </div>
-    )
+    );
   }
 }
 
-ReactDOM.render(<Demo />, document.getElementById('app'))
+ReactDOM.render(<Demo />, document.getElementById("app"));
