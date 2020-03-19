@@ -26,6 +26,9 @@ gaara g page <pageName>
 # 运行项目
 gaara dev
 
+# 选择部分页面来启动项目，适合页面多的项目
+gaara dev -S
+
 # 构建代码，并上传CDN（如果已配置 CDN 参数）
 gaara build
 

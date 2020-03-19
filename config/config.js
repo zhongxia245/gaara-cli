@@ -1,11 +1,11 @@
-const fs = require('fs')
-const paths = require('./paths')
+const fs = require("fs")
+const paths = require("./paths")
 
-const isProd = process.env.NODE_ENV === 'production'
+const isProd = process.env.NODE_ENV === "production"
 
 // 加载项目自定义配置
 const loadConfig = () => {
-  const configPath = paths.resolveApp('config.js')
+  const configPath = paths.resolveApp("config.js")
   let config = {}
   if (fs.existsSync(configPath)) {
     config = require(configPath)
@@ -25,9 +25,9 @@ const defaultConfig = {
   // 代理配置
   proxy: {},
   // 入口目录(这里指向模板项目)
-  inputPath: 'template/simple/src',
+  inputPath: "template/simple/src",
   // 输出目录
-  outputPath: 'dist',
+  outputPath: "dist",
   // 文件引用路径别名
   alias: {},
   // px 自动转成 rem

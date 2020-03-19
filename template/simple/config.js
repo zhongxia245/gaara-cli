@@ -2,9 +2,9 @@ module.exports = {
   // 代理配置
   proxy: {},
   // 入口目录,默认 src 下的所有jsx
-  inputPath: 'src',
+  inputPath: "src",
   // 构建目录
-  outputPath: 'dist',
+  outputPath: "dist",
   // 文件引用路径别名
   alias: {},
   // 外部引用
