@@ -40,7 +40,7 @@ program
     runScript('analyze', process.argv.slice(2))
   })
 
-// 分析构建文件大小
+// 初始化一个多页项目
 program
   .command('init <dir>')
   .description('Generate a new multiple page project')
