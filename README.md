@@ -1,7 +1,6 @@
 # webpack 多页面 命令行工具
 
 [![NPM version](https://img.shields.io/npm/v/gaara-cli.svg?style=flat)](https://npmjs.org/package/gaara-cli)
-[![Build Status](https://img.shields.io/travis/umijs/gaara-cli.svg?style=flat)](https://travis-ci.org/umijs/gaara-cli)
 [![NPM downloads](http://img.shields.io/npm/dm/gaara-cli.svg?style=flat)](https://npmjs.org/package/gaara-cli)
 
 webpack 多页面的一个脚手架命令行工具，内部封装了 webpack 配置，可以让我们更专注于业务逻辑的编写。
